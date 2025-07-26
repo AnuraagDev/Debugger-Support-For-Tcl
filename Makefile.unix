@@ -1,0 +1,47 @@
+# Makefile for TCL Script Debugger (Unix/Linux/macOS)
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2
+TARGET = tcl_debugger
+SOURCE = tcl_debugger.cpp
+
+# Default target
+all: $(TARGET)
+
+# Build the debugger
+$(TARGET): $(SOURCE)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCE)
+	@echo "Build complete: $(TARGET)"
+
+# Clean build artifacts
+clean:
+	rm -f $(TARGET)
+	@echo "Clean complete"
+
+# Test with sample script
+test: $(TARGET)
+	@echo "Testing debugger..."
+	./$(TARGET)
+
+# Run with specific script
+run: $(TARGET)
+	./$(TARGET) test_memory_debug.tcl
+
+# Install to system (optional)
+install: $(TARGET)
+	sudo cp $(TARGET) /usr/local/bin/
+	@echo "Installed to /usr/local/bin/"
+
+# Uninstall from system
+uninstall:
+	sudo rm -f /usr/local/bin/$(TARGET)
+	@echo "Uninstalled from /usr/local/bin/"
+
+# Create distribution package
+dist: $(TARGET)
+	mkdir -p tcl-debugger-unix
+	cp $(TARGET) $(SOURCE) Makefile.unix README.md UNIX_INSTALLATION.md test_memory_debug.tcl tcl-debugger-unix/
+	tar -czf tcl-debugger-unix.tar.gz tcl-debugger-unix/
+	rm -rf tcl-debugger-unix/
+	@echo "Distribution package created: tcl-debugger-unix.tar.gz"
+
+.PHONY: all clean test run install uninstall dist
